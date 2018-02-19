@@ -4,7 +4,7 @@
 
 The documentation describes how to use the scripts `dump-with-docker.sh` and `docker.sh`.
 
-The scripts need a Postgres DB for buffering (**Buffer**). Make sure that the remote PostgreSQL has the same version with the **Buffer**.
+The scripts need a Postgres DB for buffering (**Buffer**). Make sure that the remote PostgreSQL (**Remote**) has the same version with the **Buffer**.
 
 ## How it works
 
@@ -24,35 +24,123 @@ The script will create a docker container and clean up it after.
 
 ### Options
 
- Name, shorthand   |     Value      |                           Description
-:----------------: | :------------: | :-------------------------------------------------------------:
-`-d, --container`  | container_name | The Remote is local docker container wiht name `container_name`
-`-p, --db-version` |   pg_version   |              A version of Buffer (PostgresSQL DB).
-`-l, --localhost`  |       -        |               Says that the Remote is localhost.
+ Name, shorthand   |     Value      | Default  |                           Description
+:----------------: | :------------: | :------: | :-------------------------------------------------------------:
+`-d, --container`  | container_name |   none   | The Remote is local docker container with name `container_name`
+`-p, --db-version` |   pg_version   | `latest` |              A version of Buffer (PostgresSQL DB).
+`-l, --localhost`  |       -        |    -     |               Says that the Remote is localhost.
 
-### localhost
+### Environment
 
-```
-cd /etc/postgresql/9.x/main/
-open file named postgresql.conf
+Please provide environment variables in `.env` before.
 
-sudo vi postgresql.conf
-add this line to that file
+Access to the Remote:
 
-listen_addresses = '*'
-then open file named pg_hba.conf
+- `REMOTE_POSTGRES_HOST` - Specifies the host name of the machine on which the server is running.
+- `REMOTE_POSTGRES_DB` - Specifies the name of the database to connect to.
+- `REMOTE_POSTGRES_USER` - Connect to the database as the user instead of the default.
+- `REMOTE_POSTGRES_PASSWORD` - The password connection parameter.
 
-sudo vi pg_hba.conf
-and add this line to that file
+### Usage
 
-host  all  all 0.0.0.0/0 md5
-It allows access to all databases for all users with an encrypted password
+- **Dumping Remote**
 
-restart your server
-sudo /etc/init.d/postgresql restart
-```
+  ```
+  bash dump-with-docker.sh
+  ```
+
+  Or:
+
+  ```
+  bash dump-with-docker.sh -p 9.6.2
+  ```
+
+  Where `9.6.2` is the version of remote PostgreSQL.
+
+- **Dumping a local docker container**
+
+  ```
+  bash dump-with-docker.sh -d container_name
+  ```
+
+  Where `container_name` is the name of local container.
+
+  Or:
+
+  ```
+  bash dump-with-docker.sh -d container_name -p 9.6.2
+  ```
+
+  Where `9.6.2` is the version of remote PostgreSQL.
+
+- **Dumping a localhost**
+
+  Make sure that the local PostgreSQL allows remote connections.
+
+  Example of configuration for the PostgreSQL for your local machine:
+
+    - Change the current directory:
+
+      ```
+      cd /etc/postgresql/9.x/main/
+      ```
+
+    - Open file named `postgresql.conf`:
+
+      ```
+      sudo vi postgresql.conf
+      ```
+
+    - Add this line to that file:
+
+      ```
+      listen_addresses = '*'
+      ```
+
+    - Then open file named `pg_hba.conf`:
+
+      ```
+      sudo vi pg_hba.conf
+      ```
+
+    - And add this line to that file:
+
+      ```
+      host  all  all 0.0.0.0/0 md5
+      ```
+
+    - It allows access to all databases for all users with an encrypted password. Restart your server.
+
+      ```
+      sudo /etc/init.d/postgresql restart
+      ```
+
+  Execute a script:
+
+  ```
+  bash dump-with-docker.sh -l
+  ```
+
+  Or:
+
+  ```
+  bash dump-with-docker.sh -l -p 9.6.2
+  ```
+
+  Where `9.6.2` is the version of remote PostgreSQL.
 
 ## II. Dump with `docker.sh`
+
+### Environment
+
+Please provide environment variables in `.env` before.
+
+- Access to the Remote:
+
+  - `REMOTE_POSTGRES_HOST` - Specifies the host name of the machine on which the server is running.
+  - `REMOTE_POSTGRES_DB` - Specifies the name of the database to connect to.
+  - `REMOTE_POSTGRES_USER` - Connect to the database as the user instead of the default.
+  - `REMOTE_POSTGRES_PASSWORD` - The password connection parameter.
 
 - Buffer DB:
 
@@ -60,8 +148,6 @@ sudo /etc/init.d/postgresql restart
   - `BUFFER_POSTGRES_DB` - Specifies the name of the database to connect to.
   - `BUFFER_POSTGRES_USER` - Connect to the database as the user instead of the default.
   - `BUFFER_POSTGRES_PASSWORD` - The password connection parameter.
-
-The script `dump-with-docker.sh`
 
 ## How to use?
 

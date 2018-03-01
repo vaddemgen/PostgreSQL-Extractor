@@ -44,7 +44,7 @@ psql -h $BUFFER_POSTGRES_HOST -U $BUFFER_POSTGRES_USER $BUFFER_POSTGRES_DB -f $C
 # Making a dump.
 echo '# Making a dump ...';
 export GZIP=-9;
-file_name="$CURRENT_PATH/dump-schoolupdate-$(date '+%Y-%m-%d_%H-%M-%S').sql.gz";
+file_name="$CURRENT_PATH/dump-$(date '+%Y-%m-%d_%H-%M-%S').sql.gz";
 pg_dump -O -x -h $BUFFER_POSTGRES_HOST -U $BUFFER_POSTGRES_USER $BUFFER_POSTGRES_DB | gzip > $file_name;
 rm $CURRENT_PATH/tmp.sql;
 

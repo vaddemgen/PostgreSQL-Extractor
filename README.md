@@ -154,7 +154,7 @@ Please provide environment variables in `.env` before.
 1. Create an Environment Configuration File.
 
   ```
-  cp schoolupdate-dump/.env.example schoolupdate-dump/.env
+  cp PostgreSQL-Extractor/.env.example PostgreSQL-Extractor/.env
   ```
 
 2. Provide access to **Remote DB** and **Buffer** in the `.env`.
@@ -220,7 +220,7 @@ Please do the following:
 
   ```
     docker network connect postgres-net postgres-buffer
-    docker network connect postgres-net schoolupdate-postgres
+    docker network connect postgres-net myproject-postgres
   ```
 
 - Check IP addresses of the containers:
